@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Todo - Plan Your Day</title>
+    <!-- CSS File -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- --- Left Sidebar --- -->
+        <aside class="sidebar">
+            <!-- Brand / Logo -->
+            <div class="brand">
+                <div class="brand-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" style="width: 24px; height: 24px;">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                    </svg>
+                </div>
+                <h1>Smart Todo</h1>
+            </div>
+
+            <!-- Theme Toggle Switch -->
+            <div class="theme-switch" id="theme-switch">
+                <div class="active-theme-bg"></div>
+                <span id="theme-light" class="active">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width: 16px; height: 16px; margin-right: 4px;">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m0 13.5V21M5.036 5.036l1.591 1.591M17.374 17.374l1.591 1.591M21 12h-2.25m-13.5 0H3m2.285-7.715l1.591 1.591M17.374 6.626l1.591-1.591M12 18.75a6.75 6.75 0 100-13.5 6.75 6.75 0 000 13.5z" />
+                    </svg>
+                    Light
+                </span>
+                <span id="theme-dark">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width: 16px; height: 16px; margin-right: 4px;">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+                    </svg>
+                    Dark
+                </span>
+            </div>
+
+            <!-- Productivity Stats Dashboard -->
+            <div class="progress-card">
+                <div class="progress-header">
+                    <span class="progress-title">Your Progress</span>
+                    <span class="progress-ratio" id="progress-ratio">0 / 0</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar-fill" id="progress-bar-fill"></div>
+                </div>
+                <div class="progress-feedback" id="progress-feedback">
+                    No tasks added yet. Start planning!
+                </div>
+            </div>
+
+            <!-- Navigation Sidebar Menu (Filters) -->
+            <nav class="sidebar-menu">
+                <div class="sidebar-section">
+                    <h3 class="menu-section-title">Status</h3>
+                    <ul class="filter-list">
+                        <li>
+                            <button class="filter-btn active" data-filter="all">
+                                <span>All Tasks</span>
+                                <span class="filter-count" id="count-all">0</span>
+                            </button>
+                        </li>
+                        <li>
+                            <button class="filter-btn" data-filter="active">
+                                <span>Active</span>
+                                <span class="filter-count" id="count-active">0</span>
+                            </button>
+                        </li>
+                        <li>
+                            <button class="filter-btn" data-filter="completed">
+                                <span>Completed</span>
+                                <span class="filter-count" id="count-completed">0</span>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-section" style="margin-top: 1.5rem;">
+                    <h3 class="menu-section-title">Categories</h3>
+                    <ul class="filter-list">
+                        <li>
+                            <button class="filter-btn" data-category="Work">
+                                <span><span class="cat-dot cat-work-dot"></span>Work</span>
+                                <span class="filter-count" id="count-work">0</span>
+                            </button>
+                        </li>
+                        <li>
+                            <button class="filter-btn" data-category="Personal">
+                                <span><span class="cat-dot cat-personal-dot"></span>Personal</span>
+                                <span class="filter-count" id="count-personal">0</span>
+                            </button>
+                        </li>
+                        <li>
+                            <button class="filter-btn" data-category="Shopping">
+                                <span><span class="cat-dot cat-shopping-dot"></span>Shopping</span>
+                                <span class="filter-count" id="count-shopping">0</span>
+                            </button>
+                        </li>
+                        <li>
+                            <button class="filter-btn" data-category="Health">
+                                <span><span class="cat-dot cat-health-dot"></span>Health</span>
+                                <span class="filter-count" id="count-health">0</span>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- --- Main Work Area --- -->
+        <main class="main-content">
+            <!-- Search & Sort Row -->
+            <header class="header-actions">
+                <div class="search-wrapper">
+                    <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                    </svg>
+                    <input type="text" id="search-input" class="search-input" placeholder="Search tasks...">
+                </div>
+                <div class="sort-wrapper">
+                    <label for="sort-select" class="sort-label">Sort by</label>
+                    <select id="sort-select" class="sort-select">
+                        <option value="created">Date Created</option>
+                        <option value="priority">Priority (High-Low)</option>
+                        <option value="due">Due Date</option>
+                    </select>
+                </div>
+            </header>
+
+            <!-- Task Form Input Card -->
+            <form id="todo-form" class="todo-form" autocomplete="off">
+                <!-- Task title input row -->
+                <div class="form-row-main">
+                    <div class="form-input-wrapper">
+                        <input type="text" id="todo-input" class="todo-input" placeholder="Add a new task..." required>
+                    </div>
+                </div>
+
+                <!-- Task metadata details row -->
+                <div class="form-row-details">
+                    <div class="form-group">
+                        <label for="todo-category" class="form-label">Category</label>
+                        <select id="todo-category" class="form-select">
+                            <option value="Work">💼 Work</option>
+                            <option value="Personal">🏠 Personal</option>
+                            <option value="Shopping">🛒 Shopping</option>
+                            <option value="Health">❤️ Health</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="todo-priority" class="form-label">Priority</label>
+                        <select id="todo-priority" class="form-select">
+                            <option value="Low">Low</option>
+                            <option value="Medium" selected>Medium</option>
+                            <option value="High">High</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="todo-date" class="form-label">Due Date</label>
+                        <input type="date" id="todo-date" class="form-date-input">
+                    </div>
+
+                    <!-- Add Button -->
+                    <button type="submit" class="add-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+                        Add Task
+                    </button>
+                </div>
+            </form>
+
+            <!-- Task List Section -->
+            <section class="tasks-container">
+                <div class="task-list-title">
+                    <span>Task List</span>
+                    <button id="clear-completed" class="clear-completed-btn">Clear Completed</button>
+                </div>
+
+                <!-- Dynamic Tasks Container -->
+                <div id="task-list" class="task-list">
+                    <!-- Dynamic tasks will be inserted here via JavaScript. -->
+                    <!-- We'll fall back to empty state if no tasks match. -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- JavaScript File -->
+    <script src="app.js"></script>
+</body>
+</html>
