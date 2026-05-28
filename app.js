@@ -53,6 +53,7 @@ const clearCompletedBtn = document.getElementById('clear-completed');
 const progressRatio = document.getElementById('progress-ratio');
 const progressBarFill = document.getElementById('progress-bar-fill');
 const progressFeedback = document.getElementById('progress-feedback');
+const taskCounter = document.getElementById('task-counter');
 
 const themeSwitch = document.getElementById('theme-switch');
 const themeLight = document.getElementById('theme-light');
@@ -114,6 +115,41 @@ function loadTasks() {
         tasks = [...DEFAULT_TASKS];
         saveTasks();
     }
+
+    // Load filter states from localStorage if they exist
+    const savedFilter = localStorage.getItem('currentFilter');
+    if (savedFilter !== null && savedFilter !== 'null') {
+        currentFilter = savedFilter;
+        selectedCategory = null;
+        statusFilterButtons.forEach(b => {
+            if (b.getAttribute('data-filter') === currentFilter) {
+                b.classList.add('active');
+            } else {
+                b.classList.remove('active');
+            }
+        });
+        categoryFilterButtons.forEach(b => b.classList.remove('active'));
+    }
+
+    const savedCategory = localStorage.getItem('selectedCategory');
+    if (savedCategory !== null && savedCategory !== 'null') {
+        selectedCategory = savedCategory;
+        currentFilter = null;
+        statusFilterButtons.forEach(b => b.classList.remove('active'));
+        categoryFilterButtons.forEach(b => {
+            if (b.getAttribute('data-category') === selectedCategory) {
+                b.classList.add('active');
+            } else {
+                b.classList.remove('active');
+            }
+        });
+    }
+
+    const savedSortBy = localStorage.getItem('sortBy');
+    if (savedSortBy !== null) {
+        sortBy = savedSortBy;
+        sortSelect.value = sortBy;
+    }
 }
 
 function saveTasks() {
@@ -153,7 +189,10 @@ function deleteTask(id) {
     if (taskElement) {
         // Apply smooth fade-out animation first
         taskElement.classList.add('slide-out');
+        let animationFired = false;
         taskElement.addEventListener('animationend', () => {
+            if (animationFired) return;
+            animationFired = true;
             tasks = tasks.filter(task => task.id !== id);
             saveTasks();
             render();
@@ -184,7 +223,7 @@ function clearCompleted() {
         tasks = tasks.filter(task => !task.completed);
         saveTasks();
         render();
-    }, 250);
+    }, 300);
 }
 
 // --- 7. Event Listener Handlers ---
@@ -218,6 +257,7 @@ function setupEventListeners() {
     // Sorting Dropdown Selector
     sortSelect.addEventListener('change', (e) => {
         sortBy = e.target.value;
+        localStorage.setItem('sortBy', sortBy);
         render();
     });
 
@@ -235,6 +275,9 @@ function setupEventListeners() {
             btn.classList.add('active');
             currentFilter = btn.getAttribute('data-filter');
             selectedCategory = null; // Clear category filter if status filter is clicked
+            
+            localStorage.setItem('currentFilter', currentFilter);
+            localStorage.setItem('selectedCategory', null);
             
             render();
         });
@@ -259,6 +302,9 @@ function setupEventListeners() {
                 currentFilter = null; // Clear status filter if category is selected
             }
             
+            localStorage.setItem('currentFilter', currentFilter);
+            localStorage.setItem('selectedCategory', selectedCategory);
+            
             render();
         });
     });
@@ -268,6 +314,12 @@ function setupEventListeners() {
 function updateStatistics() {
     const total = tasks.length;
     const completed = tasks.filter(t => t.completed).length;
+    const active = tasks.filter(t => !t.completed).length;
+    
+    // Update task list title counter
+    if (taskCounter) {
+        taskCounter.textContent = `${active} active`;
+    }
     
     // 1. Update Progress Card Numbers
     progressRatio.textContent = `${completed} / ${total}`;
